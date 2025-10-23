@@ -8,29 +8,61 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, verbose_name='наименование')),
-                ('description', models.TextField(verbose_name='описание')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=150, verbose_name="наименование")),
+                ("description", models.TextField(verbose_name="описание")),
             ],
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='наименование')),
-                ('description', models.TextField(verbose_name='описание')),
-                ('image', models.ImageField(upload_to='', verbose_name='изображение')),
-                ('price', models.IntegerField(verbose_name='цена за покупку')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='дата создания')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='дата последнего изменения')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='catalog.category')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, verbose_name="наименование")),
+                ("description", models.TextField(verbose_name="описание")),
+                ("image", models.ImageField(upload_to="", verbose_name="изображение")),
+                ("price", models.IntegerField(verbose_name="цена за покупку")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="дата создания"
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True, verbose_name="дата последнего изменения"
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="products",
+                        to="catalog.category",
+                    ),
+                ),
             ],
         ),
     ]
