@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 
 from catalog.models import Product
 
@@ -9,8 +9,12 @@ def home(request):
     return render(request, "home.html")
 
 
-def contacts(request):
-    return render(request, "contacts.html")
+class ContactsView(TemplateView):
+    template_name = "contacts.html"
+
+
+# def contacts(request):
+#     return render(request, "contacts.html")
 
 
 def contact_form(request):
