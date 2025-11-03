@@ -36,9 +36,11 @@ class ProductsListView(ListView):
 #     context = {"products": products}
 #     return render(request, "products_list.html", context)
 
+
 class ProductDetailView(DetailView):
     model = Product
     template_name = "product_detail.html"
+
 
 # def product_detail(request, pk):
 #     product = get_object_or_404(Product, pk=pk)
