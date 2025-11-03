@@ -45,3 +45,4 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.WARNING(f"Продукт уже существует:{product.name}")
                 )
+
