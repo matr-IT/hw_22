@@ -1,0 +1,50 @@
+{% extends 'blogs/base.html' %}
+{% load my_tag %}
+
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    {% if blog.photo %}
+                        <img src="{{ blog.photo.url }}" class="card-img-top" alt="{{ blog.title }}">
+                    {% else %}
+                        <img src="/static/images/default-blog.jpg" class="card-img-top" alt="Default image">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h2 class="card-title">{{ blog.title }}</h2>
+
+                        <div class="card-text">
+                            <h5>Содержание:</h5>
+                            <p>{{ blog.body|linebreaks }}</p>
+                        </div>
+
+                        <div class="card-text">
+                            <p><strong>Дата создания:</strong> {{ blog.created_at|date:"d.m.Y H:i" }}</p>
+                            <p><strong>Статус:</strong>
+                                {% if blog.is_published == 'published' %}
+                                    <span class="badge bg-success">Опубликовано</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Черновик</span>
+                                {% endif %}
+                            </p>
+                            <p><strong>Количество просмотров:</strong> {{ blog.views_count }}</p>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="btn-group">
+                                <a class="btn btn-primary" href="{% url 'blogs:blogs_list' %}" role="button">
+                                    Назад к списку
+                                </a>
+                                <a class="btn btn-outline-secondary" href="{% url 'blogs:blogs_update' blog.pk %}" role="button">Редактировать</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
