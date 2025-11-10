@@ -14,3 +14,4 @@ class BlogForm(forms.ModelForm):
         labels = {
             'is_published': 'Статус публикации',
         }
+
