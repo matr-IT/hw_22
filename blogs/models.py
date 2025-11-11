@@ -2,21 +2,18 @@ from django.db import models
 
 
 class Blogs(models.Model):
-    DRAFT = 'draft'
-    PUBLISHED = 'published'
+    DRAFT = "draft"
+    PUBLISHED = "published"
 
     PUBLISH_STATUS = [
-        (DRAFT, 'Черновик'),
-        (PUBLISHED, 'Опубликовано'),
+        (DRAFT, "Черновик"),
+        (PUBLISHED, "Опубликовано"),
     ]
 
     title = models.CharField(max_length=150, verbose_name="Заголовок")
     body = models.TextField(verbose_name="Содержание")
     photo = models.ImageField(
-        upload_to="blogs/photo",
-        blank=True,
-        verbose_name="Превью",
-        null=True
+        upload_to="blogs/photo", blank=True, verbose_name="Превью", null=True
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
@@ -24,7 +21,7 @@ class Blogs(models.Model):
         max_length=20,
         choices=PUBLISH_STATUS,
         default=DRAFT,
-        verbose_name="Статус публикации"
+        verbose_name="Статус публикации",
     )
 
     views_count = models.IntegerField(default=0)

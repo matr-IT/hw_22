@@ -11,7 +11,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = "категория"
         verbose_name_plural = "категории"
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class Product(models.Model):
