@@ -6,7 +6,7 @@ from .models import Product
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        exclude = ["created_at", "updated_at"]
+        exclude = ["created_at", "updated_at", "owner"]  # Добавьте 'owner' в исключения
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -26,6 +26,11 @@ class ProductForm(ModelForm):
 
             if field_name == "image":
                 field.widget.attrs["class"] = "form-control-file"
+
+            # Специальная обработка для поля is_published
+            if field_name == "is_published":
+                field.widget.attrs["class"] = "form-check-input"
+                field.label = "Опубликовано?"
 
     def clean_price(self):
         price = self.cleaned_data.get("price")
@@ -67,3 +72,40 @@ class ProductForm(ModelForm):
                         self.add_error(field_name, error_message)
 
         return cleaned_data
+
+
+class ProductModeratorForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ("is_published", "description")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['description'].widget.attrs['readonly'] = True
+        self.fields['description'].widget.attrs['class'] = 'form-control'
+
+        self.fields['is_published'].label = "Опубликовано?"
+        self.fields['is_published'].help_text = "Модератор может только снять публикацию"
+        self.fields['is_published'].widget.attrs['class'] = 'form-check-input'
+
+        if not self.instance.is_published:
+            self.fields['is_published'].widget.attrs['disabled'] = True
+            self.fields['is_published'].help_text = "Продукт не опубликован. Модератор не может публиковать продукты."
+
+    def clean_is_published(self):
+        is_published = self.cleaned_data.get('is_published')
+        current_status = self.instance.is_published
+
+        if current_status is False and is_published is True:
+            raise ValidationError("Модератор не может публиковать продукты. Разрешено только снятие с публикации.")
+
+        return is_published
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if commit:
+            instance.save()
+
+        return instance
