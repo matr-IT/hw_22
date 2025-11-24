@@ -6,7 +6,7 @@ from .models import Product
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        exclude = ["created_at", "updated_at", "owner"]  # Добавьте 'owner' в исключения
+        exclude = ["created_at", "updated_at", "owner"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
