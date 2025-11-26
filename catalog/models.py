@@ -1,4 +1,8 @@
+from django.conf import settings
 from django.db import models
+from django.db.models import BooleanField, CASCADE
+
+from users.models import User
 
 
 class Category(models.Model):
@@ -28,6 +32,14 @@ class Product(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True, verbose_name="дата последнего изменения"
     )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="владелец продукта"
+    )
+    is_published = BooleanField(default=False, verbose_name="Продукт опубликован?")
 
     def __str__(self):
         return f"{self.name} - {self.category}"
@@ -37,4 +49,8 @@ class Product(models.Model):
         verbose_name_plural = "продукты"
         ordering = [
             "name",
+        ]
+        permissions = [
+            ("can_unpublish_product", "can unpublish product"),
+            ("can_delete_product", "can delete product"),
         ]

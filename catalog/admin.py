@@ -20,3 +20,4 @@ class ProductAdmin(admin.ModelAdmin):
         "name",
         "description",
     )
+
