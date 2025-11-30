@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'catalog:products_list' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'catalog:category_list' %}">Категории</a></li>
+            <li class="breadcrumb-item active">{{ category.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5">{{ category.name }}</h1>
+            {% if category.description %}
+                <p class="lead">{{ category.description }}</p>
+            {% endif %}
+            <p class="text-muted">Найдено продуктов: {{ products|length }}</p>
+        </div>
+    </div>
+
+    {% if products %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image|media_filter }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <span class="text-muted">Нет изображения</span>
+                    </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text flex-grow-1">{{ product.description|truncatewords:15 }}</p>
+
+                    <div class="mt-auto">
+                        <p class="card-text">
+                            <strong class="text-primary">{{ product.price }} руб.</strong>
+                        </p>
+
+                        {% if product.owner %}
+                            <small class="text-muted">Продавец: {{ product.owner }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent">
+                    <div class="btn-group w-100" role="group">
+                        <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-sm btn-outline-primary">
+                            Подробнее
+                        </a>
+                        {% if user == product.owner %}
+                            <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-sm btn-outline-secondary">
+                                Редактировать
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <h4>В этой категории пока нет продуктов</h4>
+                <p>Будьте первым, кто добавит продукт в категорию "{{ category.name }}"!</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'catalog:product_create' %}" class="btn btn-primary">Добавить продукт</a>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn-primary">Войдите, чтобы добавить продукт</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
