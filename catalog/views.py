@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -13,7 +13,8 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from catalog.forms import ProductForm, ProductModeratorForm
-from catalog.models import Product
+from catalog.models import Product, Category
+from catalog.services import get_products_from_cache, get_products_by_category, get_categories_with_products
 
 
 class ContactsView(TemplateView):
@@ -32,6 +33,9 @@ def contact_form(request):
 class ProductsListView(ListView):
     model = Product
     template_name = "products_list.html"
+
+    def get_queryset(self):
+        return get_products_from_cache()
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
@@ -81,3 +85,29 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
         if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
             return ProductModeratorForm
         raise PermissionDenied
+
+
+class ProductsByCategoryView(ListView):
+    template_name = 'products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        name = self.kwargs.get('name')
+        return get_products_by_category(name=name)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        name = self.kwargs.get('name')
+        context['category'] = get_object_or_404(Category, name=name)
+        context['categories'] = get_categories_with_products()
+        return context
+
+
+class CategoryListView(ListView):
+    """Представление для отображения всех категорий"""
+    model = Category
+    template_name = 'category_list.html'
+    context_object_name = 'categories'
+
+    def get_queryset(self):
+        return get_categories_with_products()
